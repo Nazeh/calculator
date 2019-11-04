@@ -11,7 +11,7 @@
 
 Calculator App built using React
 
-### ✨ [Demo](something.herokuapp.com)
+### ✨ [Demo](https://magicar-calculator.herokuapp.com/)
 
 ## Install
 
