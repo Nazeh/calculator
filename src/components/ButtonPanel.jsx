@@ -1,14 +1,10 @@
 import React from 'react';
+import Button from './Button';
 
-const ButtonPanel = () => {
-  const stuff = 'grara';
-
-  return (
-    <div>
-      gree
-      {stuff}
-    </div>
-  );
-};
+const ButtonPanel = () => (
+  <div>
+    <Button name="gree" />
+  </div>
+);
 
 export default ButtonPanel;
