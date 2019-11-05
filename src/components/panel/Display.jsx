@@ -1,6 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import './Display.scss';
 
 const Display = () => {
   const stuff = 'grara';
@@ -11,9 +9,6 @@ const Display = () => {
       {stuff}
     </div>
   );
-};
-
-Display.propTypes = {
 };
 
 export default Display;

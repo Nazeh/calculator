@@ -1,11 +1,10 @@
 import React from 'react';
-import './Display.scss';
 
 const Display = () => {
   const stuff = 'grara';
 
   return (
-    <div className="Display">
+    <div>
       gree
       {stuff}
     </div>
