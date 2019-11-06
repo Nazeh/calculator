@@ -1,0 +1,9 @@
+.ButtonPanel {
+  display: flex;
+  flex-direction: column;
+
+  &__row {
+    display: flex;
+    min-height: 100px;
+  }
+}
