@@ -17,6 +17,18 @@ describe('when buttonName is a number', () => {
 
     expect(calculate({ next }, buttonName).next).toEqual(next + buttonName);
   });
+
+  it('returns the state where total is next and next is buttonName if there is operation', () => {
+    const buttonName = randomInteger;
+    const next = randomInteger * 10 + 1;
+    const operation = randomOperation;
+
+    expect(calculate({ next, operation }, buttonName)).toEqual({
+      total: next,
+      next: buttonName,
+      operation,
+    });
+  });
 });
 
 describe('when buttonName is an operation', () => {
@@ -31,7 +43,7 @@ describe('when buttonName is an operation', () => {
   });
 
   it(`returns the state where operation is the buttonName 
-      after updating the total and next if there were `, () => {
+      after updating the total and next if there were old operation`, () => {
     const state = {
       total: randomInteger * 1000000,
       next: randomInteger * 1000000,
