@@ -5,6 +5,7 @@ const isOperation = (str) => /^['+','\-','x','÷','%']$/.test(str);
 
 const calculate = (state = {}, buttonName) => {
   if (isNumber(buttonName)) {
+    if (state.operation) return { ...state, total: state.next, next: buttonName };
     if (state.next === '0') return { ...state, next: buttonName };
     return { ...state, next: `${state.next || ''}${buttonName}` };
   }
