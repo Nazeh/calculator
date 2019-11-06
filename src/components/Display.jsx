@@ -4,7 +4,7 @@ import './Display.scss';
 
 const Display = ({ result }) => (
   <div className="Display">
-    <p className="result">{result}</p>
+    <p className="Display__result">{result}</p>
   </div>
 );
 
