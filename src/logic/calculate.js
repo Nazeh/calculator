@@ -4,31 +4,39 @@ const isNumber = (str) => /^[0-9]$/.test(str);
 const isOperation = (str) => /^['+','\-','x','÷','%']$/.test(str);
 
 const calculate = ({ state = {}, buttonName }) => {
-  if (isNumber(buttonName)) return {};
-  if (isNumber(isOperation)) return {};
+  if (isNumber(buttonName)) {
+    if (state.next === '0') return { ...state, next: buttonName };
+    return { ...state, next: `${state.next || ''}${buttonName}` };
+  }
+
+  if (isOperation(buttonName)) {
+    if (state.operation) {
+      const total = operate({
+        n1: state.total,
+        n2: state.next,
+        operation: state.operation,
+      });
+
+      return { total, next: 0, operation: buttonName };
+    }
+    return { ...state, operation: buttonName };
+  }
+
   switch (buttonName) {
     case 'AC':
       return { total: null, next: null, operation: null };
     case '+/-':
-      return {
-        total: !parseFloat(next) ? (-1 * total).toString() : total,
-        next: parseFloat(next) ? (-1 * next).toString() : next,
-      };
+      return { total: null, next: null, operation: null };
     case '.':
-      return {
-        next: next.match(/\./) ? next : next + buttonName,
-      };
+      return { total: null, next: null, operation: null };
     case '%':
-      if (next === '0') return { total: operate(total, null, buttonName) };
-      return { next: operate(next, null, buttonName) };
+      return { total: null, next: null, operation: null };
     case '=':
-      return {
-        total: operation ? operate(total, next, operation) : total,
-        next: '0',
-        operation: null,
-      };
+      return { total: null, next: null, operation: null };
     default:
   }
+
+  return false;
 };
 
 export default calculate;
