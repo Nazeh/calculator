@@ -16,6 +16,10 @@ describe('inputs', () => {
   it('sets second number default to 1 if operation is x or ÷', () => {
     expect(operate({ n1: 3, n2: null, operation: 'x' })).toEqual('3');
   });
+
+  it("return division by zero as 'Can't divide by Zero'", () => {
+    expect(operate({ n1: 3, n2: 0, operation: '÷' })).toEqual("Can't divide by Zero");
+  });
 });
 
 describe('integers', () => {
