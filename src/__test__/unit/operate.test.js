@@ -1,4 +1,4 @@
-import operate from '../logic/operate';
+import operate from '../../logic/operate';
 
 describe('inputs', () => {
   it('returns false if operator is not + - x ÷', () => {

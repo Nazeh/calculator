@@ -10,7 +10,7 @@ const calculate = (
 ) => {
   if (isNumber(buttonName)) {
     if (state.operation) {
-      return { next: `${state.next || ''}${buttonName}` };
+      return { ...state, next: `${state.next || ''}${buttonName}` };
     }
     return { total: `${state.total || ''}${buttonName}` };
   }

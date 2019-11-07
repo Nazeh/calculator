@@ -1,6 +1,6 @@
 import _ from 'lodash';
-import operate from '../logic/operate';
-import calculate from '../logic/calculate';
+import operate from '../../logic/operate';
+import calculate from '../../logic/calculate';
 
 const randomInteger = `${Math.floor(Math.random() * 10)}`;
 const randomOperation = _.sample(['+', '-', 'x', '÷']);
@@ -38,9 +38,12 @@ describe('when buttonName is a number', () => {
       });
     });
 
-    it('appends the buttonNumber to next if next is NOT null', () => {
+    it('appends the buttonNumber to next if next is NOT null and keeps the rest', () => {
+      const total = randomInteger;
       const next = randomInteger;
-      expect(calculate({ next, operation }, buttonNumber)).toMatchObject({
+      expect(calculate({ total, operation, next }, buttonNumber)).toMatchObject({
+        total,
+        operation,
         next: next + buttonNumber,
       });
     });
