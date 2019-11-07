@@ -13,7 +13,6 @@ const App = () => {
   });
 
   const handleClick = (buttonName) => {
-    console.log({ ...state }, buttonName);
     setState(calculate({ ...state }, buttonName));
   };
 
