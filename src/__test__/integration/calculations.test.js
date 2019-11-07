@@ -12,7 +12,7 @@ describe('', () => {
         state = calculate(state, buttonName);
       });
 
-      expect(state).toEqual({ total: '2', operation: null, next: null });
+      expect(state).toMatchObject({ total: '2' });
     });
 
     it('returns 12+1 = 13', () => {
@@ -20,7 +20,7 @@ describe('', () => {
         state = calculate(state, buttonName);
       });
 
-      expect(state).toEqual({ total: '13', operation: null, next: null });
+      expect(state).toMatchObject({ total: '13' });
     });
   });
 
@@ -30,7 +30,7 @@ describe('', () => {
         state = calculate(state, buttonName);
       });
 
-      expect(state).toEqual({ total: '8', operation: null, next: null });
+      expect(state).toMatchObject({ total: '8' });
     });
   });
 
@@ -40,7 +40,7 @@ describe('', () => {
         state = calculate(state, buttonName);
       });
 
-      expect(state).toEqual({ total: '20', operation: null, next: null });
+      expect(state).toMatchObject({ total: '20' });
     });
   });
 
@@ -50,7 +50,7 @@ describe('', () => {
         state = calculate(state, buttonName);
       });
 
-      expect(state).toEqual({ total: '5', operation: null, next: null });
+      expect(state).toMatchObject({ total: '5' });
     });
   });
 
@@ -60,7 +60,7 @@ describe('', () => {
         state = calculate(state, buttonName);
       });
 
-      expect(state).toEqual({ total: '0.1', operation: null, next: null });
+      expect(state).toMatchObject({ total: '0.1' });
     });
 
     it('returns 5 + 10 % >> 0.1', () => {
@@ -68,7 +68,33 @@ describe('', () => {
         state = calculate(state, buttonName);
       });
 
-      expect(state).toEqual({ total: '0.1', operation: null, next: null });
+      expect(state).toMatchObject({ total: '0.1' });
+    });
+  });
+
+  describe('dot "."', () => {
+    it('returns . >> 0.', () => {
+      ['.'].forEach((buttonName) => {
+        state = calculate(state, buttonName);
+      });
+
+      expect(state).toMatchObject({ total: '0.' });
+    });
+
+    it('returns 10 . >> 10.', () => {
+      ['1', '0', '.'].forEach((buttonName) => {
+        state = calculate(state, buttonName);
+      });
+
+      expect(state).toMatchObject({ total: '10.' });
+    });
+
+    it('returns 10 + 5 .  >> 5.2', () => {
+      ['1', '0', '+', '5', '.', '2'].forEach((buttonName) => {
+        state = calculate(state, buttonName);
+      });
+
+      expect(state).toMatchObject({ total: '10', operation: '+', next: '5.2' });
     });
   });
 
@@ -78,7 +104,7 @@ describe('', () => {
         state = calculate(state, buttonName);
       });
 
-      expect(state).toEqual({ total: '36', operation: null, next: null });
+      expect(state).toMatchObject({ total: '36' });
     });
   });
 });
