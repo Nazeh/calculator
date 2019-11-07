@@ -163,6 +163,47 @@ describe('when buttonName is not operator or number', () => {
     });
   });
 
+  describe('when buttonName is "%"', () => {
+    let total;
+    let next;
+    let operation;
+
+    beforeEach(() => {
+      total = randomInteger;
+      next = randomInteger;
+      operation = randomOperation;
+    });
+
+    describe('if operation is NOT null', () => {
+      it('divides the value of next by 100 if it exists', () => {
+        expect(calculate({ total, operation, next }, '%')).toMatchObject({
+          total,
+          operation,
+          next: operate(next, '100', '÷'),
+        });
+      });
+
+      it('returns the same state if next is null', () => {
+        expect(calculate({ total, operation }, '%')).toEqual({
+          total,
+          operation,
+        });
+      });
+    });
+
+    describe('if operation is null', () => {
+      it('divides the value of total by 100 it exists', () => {
+        expect(calculate({ total }, '%')).toMatchObject({
+          total: operate(total, '100', '÷'),
+        });
+      });
+
+      it('returns the same state if total is null', () => {
+        expect(calculate({}, '%')).toEqual({});
+      });
+    });
+  });
+
   describe('when buttonName is "."', () => {
     describe('when operation is null', () => {
       let total;

@@ -15,8 +15,6 @@ const operate = (n1, n2, operation) => {
     case '÷':
       if (secondNumber.toString() === '0') return "Can't divide by Zero";
       return firstNumber.div(secondNumber).toString();
-    case '%':
-      return firstNumber.div(100).toString();
     default:
       return false;
   }

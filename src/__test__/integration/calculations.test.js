@@ -68,7 +68,7 @@ describe('', () => {
         state = calculate(state, buttonName);
       });
 
-      expect(state).toMatchObject({ total: '0.1' });
+      expect(state).toMatchObject({ next: '0.1' });
     });
   });
 
