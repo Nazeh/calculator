@@ -23,7 +23,7 @@ const calculate = (
         next: null,
       };
     }
-    return { ...state, total: state.total || 0, operation: buttonName };
+    return { ...state, total: state.total || '0', operation: buttonName };
   }
 
   switch (buttonName) {
@@ -44,10 +44,16 @@ const calculate = (
       }
       return { total: state.total ? tryAddDot(state.total) : '0.' };
     case '=':
-      if (state.operation) {
+      if (state.next) {
         return {
           total: operate(state.total, state.next, state.operation),
-          next: '0',
+          operation: null,
+          next: null,
+        };
+      } if (state.operation) {
+        return {
+          ...state,
+          total: operate(state.total, state.next, state.operation),
           operation: null,
         };
       }
