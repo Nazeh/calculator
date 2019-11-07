@@ -18,7 +18,7 @@ const calculate = (
   if (isOperation(buttonName)) {
     if (state.next) {
       return {
-        total: operate(state.total, state.next, buttonName),
+        total: operate(state.total, state.next, state.operation),
         operation: buttonName,
         next: null,
       };

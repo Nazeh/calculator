@@ -106,5 +106,13 @@ describe('', () => {
 
       expect(state).toMatchObject({ total: '36' });
     });
+
+    it('returns 10 + 2 x 3 = 60', () => {
+      ['1', '0', 'x', '2', '+', '3', '='].forEach((buttonName) => {
+        state = calculate(state, buttonName);
+      });
+
+      expect(state).toMatchObject({ total: '23' });
+    });
   });
 });

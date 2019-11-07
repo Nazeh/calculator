@@ -66,10 +66,10 @@ describe('when buttonName is an operation', () => {
     it(`sets the total to the result of the state and the operation to
      the buttonOperation and resets the next`, () => {
       expect(
-        calculate({ total, operation, next }, buttonOperation),
+        calculate({ total, operation, next }, 'x'),
       ).toMatchObject({
         total: operate(total, next, operation),
-        operation: buttonOperation,
+        operation: 'x',
         next: null,
       });
     });
