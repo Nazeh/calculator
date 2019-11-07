@@ -54,6 +54,24 @@ describe('', () => {
     });
   });
 
+  describe('simple percentage', () => {
+    it('returns 10 % >> 0.1', () => {
+      ['1', '0', '%'].forEach((buttonName) => {
+        state = calculate(state, buttonName);
+      });
+
+      expect(state).toEqual({ total: '0.1', operation: null, next: null });
+    });
+
+    it('returns 5 + 10 % >> 0.1', () => {
+      ['5', '+', '1', '0', '%'].forEach((buttonName) => {
+        state = calculate(state, buttonName);
+      });
+
+      expect(state).toEqual({ total: '0.1', operation: null, next: null });
+    });
+  });
+
   describe('complicated serial of buttons', () => {
     it('returns 10 + 2 x 3 = 60', () => {
       ['1', '0', '+', '2', 'x', '3', '='].forEach((buttonName) => {
