@@ -107,6 +107,47 @@ describe('when buttonName is not operator or number', () => {
     });
   });
 
+  describe('when buttonName is "+/-"', () => {
+    let total;
+    let next;
+    let operation;
+
+    beforeEach(() => {
+      total = randomInteger;
+      next = randomInteger;
+      operation = randomOperation;
+    });
+
+    describe('if operation is NOT null', () => {
+      it('negates the value of next if it exists', () => {
+        expect(calculate({ total, operation, next }, '+/-')).toMatchObject({
+          total,
+          operation,
+          next: operate(next, -1, 'x'),
+        });
+      });
+
+      it('returns the same state if next is null', () => {
+        expect(calculate({ total, operation }, '+/-')).toEqual({
+          total,
+          operation,
+        });
+      });
+    });
+
+    describe('if operation is null', () => {
+      it('negates the value of total it exists', () => {
+        expect(calculate({ total }, '+/-')).toMatchObject({
+          total: operate(total, -1, 'x'),
+        });
+      });
+
+      it('returns the same state if total is null', () => {
+        expect(calculate({}, '+/-')).toEqual({});
+      });
+    });
+  });
+
   describe('when buttonName is "."', () => {
     describe('when operation is null', () => {
       let total;
@@ -115,7 +156,7 @@ describe('when buttonName is not operator or number', () => {
       });
 
       it('sets total to "0." if total was null', () => {
-        expect(calculate({ }, '.')).toMatchObject({ total: '0.' });
+        expect(calculate({}, '.')).toMatchObject({ total: '0.' });
       });
 
       it('appends total with "."', () => {
@@ -151,36 +192,6 @@ describe('when buttonName is not operator or number', () => {
       it('keeps total if it contains"."', () => {
         next = `${next}.`;
         expect(calculate({ next, operation }, '.')).toMatchObject({ next });
-      });
-    });
-  });
-
-  describe('when buttonName is "+/-"', () => {
-    let number;
-    let operation;
-
-    beforeEach(() => {
-      number = randomInteger;
-      operation = randomOperation;
-    });
-
-    it('negates the value of next if it exists', () => {
-      expect(
-        calculate({ total: null, next: number, operation }, '+/-'),
-      ).toMatchObject({
-        total: null,
-        next: operate(number, -1, 'x'),
-        operation,
-      });
-    });
-
-    it('negates the value of total if next doesnt exist', () => {
-      expect(
-        calculate({ total: number, next: null, operation }, '+/-'),
-      ).toMatchObject({
-        next: null,
-        total: operate(number, -1, 'x'),
-        operation,
       });
     });
   });
