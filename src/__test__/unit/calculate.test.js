@@ -205,12 +205,12 @@ describe('when buttonName is not operator or number', () => {
   });
 
   describe('when buttonName is "."', () => {
-    describe('when operation is null', () => {
-      let total;
-      beforeEach(() => {
-        total = randomInteger;
-      });
+    let total;
+    beforeEach(() => {
+      total = randomInteger;
+    });
 
+    describe('when operation is null', () => {
       it('sets total to "0." if total was null', () => {
         expect(calculate({}, '.')).toMatchObject({ total: '0.' });
       });
@@ -235,19 +235,29 @@ describe('when buttonName is not operator or number', () => {
         operation = randomOperation;
       });
 
-      it('sets total to "0." if total was null', () => {
-        expect(calculate({ operation }, '.')).toMatchObject({ next: '0.' });
+      it('sets next to "0." if next was null', () => {
+        expect(calculate({ total, operation }, '.')).toMatchObject({
+          total,
+          operation,
+          next: '0.',
+        });
       });
 
-      it('appends total with "."', () => {
-        expect(calculate({ next, operation }, '.')).toMatchObject({
+      it('appends next with "."', () => {
+        expect(calculate({ total, operation, next }, '.')).toMatchObject({
+          total,
+          operation,
           next: `${next}.`,
         });
       });
 
       it('keeps total if it contains"."', () => {
         next = `${next}.`;
-        expect(calculate({ next, operation }, '.')).toMatchObject({ next });
+        expect(calculate({ total, operation, next }, '.')).toMatchObject({
+          total,
+          operation,
+          next,
+        });
       });
     });
   });

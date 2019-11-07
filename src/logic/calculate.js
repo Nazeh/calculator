@@ -49,7 +49,7 @@ const calculate = (
         : { ...state };
     case '.':
       if (state.operation) {
-        return { next: state.next ? tryAddDot(state.next) : '0.' };
+        return { ...state, next: state.next ? tryAddDot(state.next) : '0.' };
       }
       return { total: state.total ? tryAddDot(state.total) : '0.' };
     case '=':
