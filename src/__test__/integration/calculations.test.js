@@ -3,7 +3,7 @@ import calculate from '../../logic/calculate';
 describe('', () => {
   let state;
   beforeEach(() => {
-    state = { total: null, operation: null, next: null };
+    state = { LHS: null, operation: null, RHS: null };
   });
 
   describe('simple addition', () => {
@@ -12,7 +12,7 @@ describe('', () => {
         state = calculate(state, buttonName);
       });
 
-      expect(state).toMatchObject({ total: '2' });
+      expect(state).toMatchObject({ LHS: '2' });
     });
 
     it('returns 12+1 = 13', () => {
@@ -20,7 +20,7 @@ describe('', () => {
         state = calculate(state, buttonName);
       });
 
-      expect(state).toMatchObject({ total: '13' });
+      expect(state).toMatchObject({ LHS: '13' });
     });
   });
 
@@ -30,7 +30,7 @@ describe('', () => {
         state = calculate(state, buttonName);
       });
 
-      expect(state).toMatchObject({ total: '8' });
+      expect(state).toMatchObject({ LHS: '8' });
     });
   });
 
@@ -40,7 +40,7 @@ describe('', () => {
         state = calculate(state, buttonName);
       });
 
-      expect(state).toMatchObject({ total: '20' });
+      expect(state).toMatchObject({ LHS: '20' });
     });
   });
 
@@ -50,7 +50,7 @@ describe('', () => {
         state = calculate(state, buttonName);
       });
 
-      expect(state).toMatchObject({ total: '5' });
+      expect(state).toMatchObject({ LHS: '5' });
     });
   });
 
@@ -60,7 +60,7 @@ describe('', () => {
         state = calculate(state, buttonName);
       });
 
-      expect(state).toMatchObject({ total: '0.1' });
+      expect(state).toMatchObject({ LHS: '0.1' });
     });
 
     it('returns 5 + 10 % >> 0.1', () => {
@@ -68,7 +68,7 @@ describe('', () => {
         state = calculate(state, buttonName);
       });
 
-      expect(state).toMatchObject({ next: '0.1' });
+      expect(state).toMatchObject({ RHS: '0.1' });
     });
   });
 
@@ -78,7 +78,7 @@ describe('', () => {
         state = calculate(state, buttonName);
       });
 
-      expect(state).toMatchObject({ total: '0.' });
+      expect(state).toMatchObject({ LHS: '0.' });
     });
 
     it('returns 10 . >> 10.', () => {
@@ -86,7 +86,7 @@ describe('', () => {
         state = calculate(state, buttonName);
       });
 
-      expect(state).toMatchObject({ total: '10.' });
+      expect(state).toMatchObject({ LHS: '10.' });
     });
 
     it('returns 10 + 5 .  >> 5.2', () => {
@@ -94,7 +94,7 @@ describe('', () => {
         state = calculate(state, buttonName);
       });
 
-      expect(state).toMatchObject({ total: '10', operation: '+', next: '5.2' });
+      expect(state).toMatchObject({ LHS: '10', operation: '+', RHS: '5.2' });
     });
   });
 
@@ -104,7 +104,7 @@ describe('', () => {
         state = calculate(state, buttonName);
       });
 
-      expect(state).toMatchObject({ total: '36' });
+      expect(state).toMatchObject({ LHS: '36' });
     });
 
     it('returns 10 + 2 x 3 = 60', () => {
@@ -112,7 +112,7 @@ describe('', () => {
         state = calculate(state, buttonName);
       });
 
-      expect(state).toMatchObject({ total: '23' });
+      expect(state).toMatchObject({ LHS: '23' });
     });
   });
 });

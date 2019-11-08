@@ -7,9 +7,9 @@ import './App.scss';
 
 const App = () => {
   const [state, setState] = useState({
-    total: null,
-    next: '0',
+    LHS: null,
     operation: null,
+    RHS: null,
   });
 
   const handleClick = (buttonName) => {
@@ -18,7 +18,7 @@ const App = () => {
 
   return (
     <div id="App">
-      <Display total={state.next || state.total || '0'} />
+      <Display total={state.LHS || state.RHS || '0'} />
       <ButtonPanel clickHandler={handleClick} />
     </div>
   );

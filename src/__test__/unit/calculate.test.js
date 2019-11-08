@@ -12,16 +12,16 @@ describe('when buttonName is a number', () => {
   });
 
   describe('when operation is null', () => {
-    it('sets the total to the buttonNumber if total is null', () => {
+    it('sets the LHS to the buttonNumber if LHS is null', () => {
       expect(calculate({}, buttonNumber)).toMatchObject({
-        total: buttonNumber,
+        LHS: buttonNumber,
       });
     });
 
-    it('appends the buttonNumber to total if total is NOT null', () => {
-      const total = randomInteger;
-      expect(calculate({ total }, buttonNumber)).toMatchObject({
-        total: total + buttonNumber,
+    it('appends the buttonNumber to LHS if LHS is NOT null', () => {
+      const LHS = randomInteger;
+      expect(calculate({ LHS }, buttonNumber)).toMatchObject({
+        LHS: LHS + buttonNumber,
       });
     });
   });
@@ -32,68 +32,68 @@ describe('when buttonName is a number', () => {
       operation = randomOperation;
     });
 
-    it('sets the total to the buttonNumber if next is null', () => {
+    it('sets the LHS to the buttonNumber if RHS is null', () => {
       expect(calculate({ operation }, buttonNumber)).toMatchObject({
-        next: buttonNumber,
+        RHS: buttonNumber,
       });
     });
 
-    it('appends the buttonNumber to next if next is NOT null and keeps the rest', () => {
-      const total = randomInteger;
-      const next = randomInteger;
-      expect(calculate({ total, operation, next }, buttonNumber)).toMatchObject({
-        total,
+    it('appends the buttonNumber to RHS if RHS is NOT null and keeps the rest', () => {
+      const LHS = randomInteger;
+      const RHS = randomInteger;
+      expect(calculate({ LHS, operation, RHS }, buttonNumber)).toMatchObject({
+        LHS,
         operation,
-        next: next + buttonNumber,
+        RHS: RHS + buttonNumber,
       });
     });
   });
 });
 
 describe('when buttonName is an operation', () => {
-  let next;
-  let total;
+  let RHS;
+  let LHS;
   let operation;
   let buttonOperation;
   beforeEach(() => {
-    next = randomInteger;
-    total = randomInteger;
+    RHS = randomInteger;
+    LHS = randomInteger;
     operation = randomOperation;
     buttonOperation = randomOperation;
   });
 
-  describe('when next is NOT null', () => {
-    it(`sets the total to the result of the state and the operation to
-     the buttonOperation and resets the next`, () => {
+  describe('when RHS is NOT null', () => {
+    it(`sets the LHS to the result of the state and the operation to
+     the buttonOperation and resets the RHS`, () => {
       expect(
-        calculate({ total, operation, next }, 'x'),
+        calculate({ LHS, operation, RHS }, 'x'),
       ).toMatchObject({
-        total: operate(total, next, operation),
+        LHS: operate(LHS, RHS, operation),
         operation: 'x',
-        next: null,
+        RHS: null,
       });
     });
   });
 
-  describe('when next is Null', () => {
-    it('sets the operation to the buttonOperation and maintains the total', () => {
-      expect(calculate({ total }, buttonOperation)).toMatchObject({
-        total,
+  describe('when RHS is Null', () => {
+    it('sets the operation to the buttonOperation and maintains the LHS', () => {
+      expect(calculate({ LHS }, buttonOperation)).toMatchObject({
+        LHS,
         operation: buttonOperation,
       });
     });
 
-    it('changes the existing operation to the buttonOperation and maintains the total', () => {
-      expect(calculate({ total, operation }, buttonOperation)).toMatchObject({
-        total,
+    it('changes the existing operation to the buttonOperation and maintains the LHS', () => {
+      expect(calculate({ LHS, operation }, buttonOperation)).toMatchObject({
+        LHS,
         operation: buttonOperation,
       });
     });
 
-    describe('when total and operation are Null', () => {
-      it('sets the operation to the buttonOperation sets the total to 0', () => {
+    describe('when LHS and operation are Null', () => {
+      it('sets the operation to the buttonOperation sets the LHS to 0', () => {
         expect(calculate({}, buttonOperation)).toMatchObject({
-          total: '0',
+          LHS: '0',
           operation: buttonOperation,
         });
       });
@@ -105,192 +105,192 @@ describe('when buttonName is not operator or number', () => {
   describe(' when buttonName is "AC"', () => {
     it('return a reseted state', () => {
       expect(calculate({}, 'AC')).toMatchObject({
-        total: null,
-        next: null,
+        LHS: null,
+        RHS: null,
         operation: null,
       });
 
       expect(calculate({
-        total: randomInteger,
+        LHS: randomInteger,
         operation: randomOperation,
-        next: randomInteger,
+        RHS: randomInteger,
       }, 'AC')).toMatchObject({
-        total: null,
-        next: null,
+        LHS: null,
+        RHS: null,
         operation: null,
       });
     });
   });
 
   describe('when buttonName is "+/-"', () => {
-    let total;
-    let next;
+    let LHS;
+    let RHS;
     let operation;
 
     beforeEach(() => {
-      total = randomInteger;
-      next = randomInteger;
+      LHS = randomInteger;
+      RHS = randomInteger;
       operation = randomOperation;
     });
 
     describe('if operation is NOT null', () => {
-      it('negates the value of next if it exists', () => {
-        expect(calculate({ total, operation, next }, '+/-')).toMatchObject({
-          total,
+      it('negates the value of RHS if it exists', () => {
+        expect(calculate({ LHS, operation, RHS }, '+/-')).toMatchObject({
+          LHS,
           operation,
-          next: operate(next, -1, 'x'),
+          RHS: operate(RHS, -1, 'x'),
         });
       });
 
-      it('returns the same state if next is null', () => {
-        expect(calculate({ total, operation }, '+/-')).toEqual({
-          total,
+      it('returns the same state if RHS is null', () => {
+        expect(calculate({ LHS, operation }, '+/-')).toEqual({
+          LHS,
           operation,
         });
       });
     });
 
     describe('if operation is null', () => {
-      it('negates the value of total it exists', () => {
-        expect(calculate({ total }, '+/-')).toMatchObject({
-          total: operate(total, -1, 'x'),
+      it('negates the value of LHS it exists', () => {
+        expect(calculate({ LHS }, '+/-')).toMatchObject({
+          LHS: operate(LHS, -1, 'x'),
         });
       });
 
-      it('returns the same state if total is null', () => {
+      it('returns the same state if LHS is null', () => {
         expect(calculate({}, '+/-')).toEqual({});
       });
     });
   });
 
   describe('when buttonName is "%"', () => {
-    let total;
-    let next;
+    let LHS;
+    let RHS;
     let operation;
 
     beforeEach(() => {
-      total = randomInteger;
-      next = randomInteger;
+      LHS = randomInteger;
+      RHS = randomInteger;
       operation = randomOperation;
     });
 
     describe('if operation is NOT null', () => {
-      it('divides the value of next by 100 if it exists', () => {
-        expect(calculate({ total, operation, next }, '%')).toMatchObject({
-          total,
+      it('divides the value of RHS by 100 if it exists', () => {
+        expect(calculate({ LHS, operation, RHS }, '%')).toMatchObject({
+          LHS,
           operation,
-          next: operate(next, '100', '÷'),
+          RHS: operate(RHS, '100', '÷'),
         });
       });
 
-      it('returns the same state if next is null', () => {
-        expect(calculate({ total, operation }, '%')).toEqual({
-          total,
+      it('returns the same state if RHS is null', () => {
+        expect(calculate({ LHS, operation }, '%')).toEqual({
+          LHS,
           operation,
         });
       });
     });
 
     describe('if operation is null', () => {
-      it('divides the value of total by 100 it exists', () => {
-        expect(calculate({ total }, '%')).toMatchObject({
-          total: operate(total, '100', '÷'),
+      it('divides the value of LHS by 100 it exists', () => {
+        expect(calculate({ LHS }, '%')).toMatchObject({
+          LHS: operate(LHS, '100', '÷'),
         });
       });
 
-      it('returns the same state if total is null', () => {
+      it('returns the same state if LHS is null', () => {
         expect(calculate({}, '%')).toEqual({});
       });
     });
   });
 
   describe('when buttonName is "."', () => {
-    let total;
+    let LHS;
     beforeEach(() => {
-      total = randomInteger;
+      LHS = randomInteger;
     });
 
     describe('when operation is null', () => {
-      it('sets total to "0." if total was null', () => {
-        expect(calculate({}, '.')).toMatchObject({ total: '0.' });
+      it('sets LHS to "0." if LHS was null', () => {
+        expect(calculate({}, '.')).toMatchObject({ LHS: '0.' });
       });
 
-      it('appends total with "."', () => {
-        expect(calculate({ total }, '.')).toMatchObject({
-          total: `${total}.`,
+      it('appends LHS with "."', () => {
+        expect(calculate({ LHS }, '.')).toMatchObject({
+          LHS: `${LHS}.`,
         });
       });
 
-      it('keeps total if it contains"."', () => {
-        total = `${total}.`;
-        expect(calculate({ total }, '.')).toMatchObject({ total });
+      it('keeps LHS if it contains"."', () => {
+        LHS = `${LHS}.`;
+        expect(calculate({ LHS }, '.')).toMatchObject({ LHS });
       });
     });
 
     describe('when operation is NOT null', () => {
-      let next;
+      let RHS;
       let operation;
       beforeEach(() => {
-        next = randomInteger;
+        RHS = randomInteger;
         operation = randomOperation;
       });
 
-      it('sets next to "0." if next was null', () => {
-        expect(calculate({ total, operation }, '.')).toMatchObject({
-          total,
+      it('sets RHS to "0." if RHS was null', () => {
+        expect(calculate({ LHS, operation }, '.')).toMatchObject({
+          LHS,
           operation,
-          next: '0.',
+          RHS: '0.',
         });
       });
 
-      it('appends next with "."', () => {
-        expect(calculate({ total, operation, next }, '.')).toMatchObject({
-          total,
+      it('appends RHS with "."', () => {
+        expect(calculate({ LHS, operation, RHS }, '.')).toMatchObject({
+          LHS,
           operation,
-          next: `${next}.`,
+          RHS: `${RHS}.`,
         });
       });
 
-      it('keeps total if it contains"."', () => {
-        next = `${next}.`;
-        expect(calculate({ total, operation, next }, '.')).toMatchObject({
-          total,
+      it('keeps LHS if it contains"."', () => {
+        RHS = `${RHS}.`;
+        expect(calculate({ LHS, operation, RHS }, '.')).toMatchObject({
+          LHS,
           operation,
-          next,
+          RHS,
         });
       });
     });
   });
 
   describe('when buttonName is "="', () => {
-    let total;
+    let LHS;
     let operation;
-    let next;
+    let RHS;
 
     beforeEach(() => {
-      total = randomInteger;
+      LHS = randomInteger;
       operation = randomOperation;
-      next = randomInteger;
+      RHS = randomInteger;
     });
 
-    it('sets total to the result of existing operation and restes the rest', () => {
-      expect(calculate({ total, operation, next }, '=')).toMatchObject({
-        total: operate(total, next, operation),
+    it('sets LHS to the result of existing operation and restes the rest', () => {
+      expect(calculate({ LHS, operation, RHS }, '=')).toMatchObject({
+        LHS: operate(LHS, RHS, operation),
         operation: null,
-        next: null,
+        RHS: null,
       });
     });
 
-    it('keeps the total and resets the operation if next is null', () => {
-      expect(calculate({ total, operation }, '=')).toMatchObject({
-        total,
+    it('keeps the LHS and resets the operation if RHS is null', () => {
+      expect(calculate({ LHS, operation }, '=')).toMatchObject({
+        LHS,
         operation: null,
       });
     });
 
     it('returns the same state if operation is null', () => {
-      expect(calculate({ total, operation: null }, '=')).toMatchObject({
-        total,
+      expect(calculate({ LHS, operation: null }, '=')).toMatchObject({
+        LHS,
         operation: null,
       });
     });

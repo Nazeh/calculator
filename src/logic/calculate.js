@@ -5,65 +5,65 @@ const isOperation = (str) => /^['+','\-','x','÷']$/.test(str);
 const tryAddDot = (str) => (str.includes('.') ? str : `${str}.`);
 
 const calculate = (
-  state = { total: null, operation: null, next: null },
+  state = { LHS: null, operation: null, RHS: null },
   buttonName,
 ) => {
   if (isNumber(buttonName)) {
     if (state.operation) {
-      return { ...state, next: `${state.next || ''}${buttonName}` };
+      return { ...state, RHS: `${state.RHS || ''}${buttonName}` };
     }
-    return { total: `${state.total || ''}${buttonName}` };
+    return { LHS: `${state.LHS || ''}${buttonName}` };
   }
 
   if (isOperation(buttonName)) {
-    if (state.next) {
+    if (state.RHS) {
       return {
-        total: operate(state.total, state.next, state.operation),
+        LHS: operate(state.LHS, state.RHS, state.operation),
         operation: buttonName,
-        next: null,
+        RHS: null,
       };
     }
-    return { ...state, total: state.total || '0', operation: buttonName };
+    return { ...state, LHS: state.LHS || '0', operation: buttonName };
   }
 
   switch (buttonName) {
     case 'AC':
-      return { total: null, next: null, operation: null };
+      return { LHS: null, RHS: null, operation: null };
     case '+/-':
       if (state.operation) {
-        return state.next
-          ? { ...state, next: operate(state.next, -1, 'x') }
+        return state.RHS
+          ? { ...state, RHS: operate(state.RHS, -1, 'x') }
           : { ...state };
       }
-      return state.total
-        ? { ...state, total: operate(state.total, -1, 'x') }
+      return state.LHS
+        ? { ...state, LHS: operate(state.LHS, -1, 'x') }
         : { ...state };
     case '%':
       if (state.operation) {
-        return state.next
-          ? { ...state, next: operate(state.next, '100', '÷') }
+        return state.RHS
+          ? { ...state, RHS: operate(state.RHS, '100', '÷') }
           : { ...state };
       }
-      return state.total
-        ? { ...state, total: operate(state.total, '100', '÷') }
+      return state.LHS
+        ? { ...state, LHS: operate(state.LHS, '100', '÷') }
         : { ...state };
     case '.':
       if (state.operation) {
-        return { ...state, next: state.next ? tryAddDot(state.next) : '0.' };
+        return { ...state, RHS: state.RHS ? tryAddDot(state.RHS) : '0.' };
       }
-      return { total: state.total ? tryAddDot(state.total) : '0.' };
+      return { LHS: state.LHS ? tryAddDot(state.LHS) : '0.' };
     case '=':
-      if (state.next) {
+      if (state.RHS) {
         return {
-          total: operate(state.total, state.next, state.operation),
+          LHS: operate(state.LHS, state.RHS, state.operation),
           operation: null,
-          next: null,
+          RHS: null,
         };
       }
       if (state.operation) {
         return {
           ...state,
-          total: operate(state.total, state.next, state.operation),
+          LHS: operate(state.LHS, state.RHS, state.operation),
           operation: null,
         };
       }
