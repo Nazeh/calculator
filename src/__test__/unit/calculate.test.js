@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import calculate from '../../logic/calculate';
 
 describe('when stack length is less than complete stack of operations', () => {
@@ -73,5 +74,13 @@ describe('complicated serial of buttons', () => {
 
   it('returns 10 x 2 + 3 = 23', () => {
     expect(calculate(['10', 'x', '2', '+', '3', '='])).toEqual('23');
+  });
+
+  it('can calculate up to 100 operations', () => {
+    expect(
+      calculate(
+        _.flatten(_.range(100).map(() => ['1', 'x'])),
+      ),
+    ).toEqual('1');
   });
 });

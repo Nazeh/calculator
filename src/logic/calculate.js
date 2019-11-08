@@ -1,11 +1,11 @@
 import operate from './operate';
 
-const recursiveOperate = (LHS, operation, RHS, ...rest) => {
-  if (!operation) return operate(LHS, '+', '0');
-  if (rest.length < 2) return operate(LHS, operation, RHS);
-  return recursiveOperate(operate(LHS, operation, RHS), rest);
-};
+const calculate = (stack = []) => {
+  const [LHS, operation, RHS, ...rest] = stack;
 
-const calculate = (stack = []) => recursiveOperate(...stack);
+  if (!RHS) return operate(LHS, '+', '0');
+  if (rest.length < 2) return operate(LHS, operation, RHS);
+  return calculate([operate(LHS, operation, RHS), ...rest]);
+};
 
 export default calculate;

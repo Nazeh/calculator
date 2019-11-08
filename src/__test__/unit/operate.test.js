@@ -9,11 +9,12 @@ describe('inputs', () => {
     expect(operate(null, '+', 2)).toEqual('2');
   });
 
-  it('sets second number default to 0 if s +r -', () => {
+  it('sets second number default to 0 if operation is + or -', () => {
     expect(operate(2, '+', null)).toEqual('2');
+    expect(operate(2, '-', null)).toEqual('2');
   });
 
-  it('sets second number default to 1 if s xr ÷', () => {
+  it('sets second number default to 1 if operation is x or ÷', () => {
     expect(operate(3, 'x', null)).toEqual('3');
   });
 
@@ -52,25 +53,35 @@ describe('floats', () => {
   });
 });
 
+describe('percentages', () => {
+  it('precalculate the percentage of LHS', () => {
+    expect(operate('10%', '+', 2)).toEqual('2.1');
+  });
+
+  it('precalculate the percentage of RHS', () => {
+    expect(operate(2, '+', '10%')).toEqual('2.1');
+  });
+
+  it('precalculate the percentage of both LHS and RHS', () => {
+    expect(operate('20%', '+', '10%')).toEqual('0.3');
+  });
+});
+
 describe('Big Numbers', () => {
   it('returns a string of the sum of 2 integers', () => {
-    expect(
-      operate(10000000000000, '+', 20000000000000),
-    ).toEqual('30000000000000');
+    expect(operate(10000000000000, '+', 20000000000000)).toEqual(
+      '30000000000000',
+    );
   });
   it('returns a string of the subtraction of 2 integers', () => {
-    expect(
-      operate(10000000000000, '-', 20000000000000),
-    ).toEqual('-10000000000000');
+    expect(operate(10000000000000, '-', 20000000000000)).toEqual(
+      '-10000000000000',
+    );
   });
   it('returns a string of the product of 2 integers', () => {
-    expect(
-      operate(10000000000000, 'x', 20000000000000),
-    ).toEqual('2e+26');
+    expect(operate(10000000000000, 'x', 20000000000000)).toEqual('2e+26');
   });
   it('returns a string of the quotient  of 2 integers', () => {
-    expect(
-      operate(10000000000000, '÷', 20000000000000),
-    ).toEqual('0.5');
+    expect(operate(10000000000000, '÷', 20000000000000)).toEqual('0.5');
   });
 });
