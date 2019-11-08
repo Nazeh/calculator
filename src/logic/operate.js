@@ -1,9 +1,9 @@
 import Big from 'big.js';
 
-const operate = (n1, n2, operation) => {
-  const firstNumber = Big(n1 || '0');
-  const defaultN2 = ['÷', 'x'].includes(operation) ? '1' : '0';
-  const secondNumber = Big(n2 === 0 ? '0' : (n2 || defaultN2));
+const operate = (LHS, operation, RHS) => {
+  const firstNumber = Big(LHS || '0');
+  const defaultRHS = ['÷', 'x'].includes(operation) ? '1' : '0';
+  const secondNumber = Big(RHS === 0 ? '0' : (RHS || defaultRHS));
 
   switch (operation) {
     case '+':
