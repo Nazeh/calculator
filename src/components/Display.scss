@@ -1,0 +1,16 @@
+.Display {
+  display: flex;
+  height: 100px;
+  padding: 1rem;
+  box-sizing: border-box;
+  background-color: gray;
+  justify-content: flex-end;
+
+  &__total {
+    margin: 0;
+    font-size: 3rem;
+    line-height: 5rem;
+    font-weight: bold;
+    color: white;
+  }
+}
