@@ -20,6 +20,15 @@ describe('when buttonName is a number', () => {
         total: buttonNumber,
       });
     });
+
+    it('it resets the queue and sets state.next to the buttonName', () => {
+      const queue = [randomInteger()];
+      expect(process({ ...emptyState, queue }, buttonNumber)).toEqual({
+        ...emptyState,
+        next: buttonNumber,
+        total: buttonNumber,
+      });
+    });
   });
 
   describe('when state.next is number', () => {
@@ -59,6 +68,15 @@ describe('when buttonName is an operation', () => {
     it('it sets state.next to the buttonName and state.queue to ["0"]', () => {
       expect(process(emptyState, buttonOperation)).toEqual({
         queue: ['0'],
+        next: buttonOperation,
+        total: '0',
+      });
+    });
+
+    it('it sets state.next to the buttonName and keeps the queue if it carries past total', () => {
+      const queue = [randomInteger()];
+      expect(process({ ...emptyState, queue }, buttonOperation)).toEqual({
+        queue,
         next: buttonOperation,
         total: '0',
       });
@@ -112,21 +130,35 @@ describe('when buttonName is an operation', () => {
 describe('when buttonName is terminal', () => {
   describe('when buttonName is "AC"', () => {
     it('return a reseted state', () => {
-      expect(process({
-        queue: [randomInteger(), randomOperation()],
-        next: randomInteger(),
-        total: randomInteger(),
-      }, 'AC')).toEqual(emptyState);
+      expect(
+        process(
+          {
+            queue: [randomInteger(), randomOperation()],
+            next: randomInteger(),
+            total: randomInteger(),
+          },
+          'AC',
+        ),
+      ).toEqual(emptyState);
     });
   });
 
   describe('when buttonName is "="', () => {
     it('sets queue to [total] and resests the next and total', () => {
       const total = randomInteger();
+
       expect(process({ ...emptyState, total }, '=')).toEqual({
         ...emptyState,
         queue: [total],
       });
+    });
+
+    it('return a reseted state if the total was division by zero', () => {
+      const queue = [randomInteger(), '÷'];
+      const next = '0';
+      const total = calculate([...queue, next]);
+
+      expect(process({ queue, next, total }, '=')).toEqual(emptyState);
     });
   });
 });
