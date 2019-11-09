@@ -18,8 +18,8 @@ describe('inputs', () => {
     expect(operate(3, 'x', null)).toEqual('3');
   });
 
-  it("return division by zero as 'Can't divide by Zero'", () => {
-    expect(operate(3, '÷', 0)).toEqual("Can't divide by Zero");
+  it("return division by zero as 'Cannot divide by zero‬'", () => {
+    expect(operate(3, '÷', 0)).toEqual('Cannot divide by zero‬');
   });
 });
 

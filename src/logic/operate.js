@@ -24,7 +24,7 @@ const operate = (LHS, operation, RHS) => {
     case 'x':
       return LHS.times(RHS).toString();
     case '÷':
-      if (RHS.toString() === '0') return "Can't divide by Zero";
+      if (RHS.toString() === '0') return 'Cannot divide by zero‬';
       return LHS.div(RHS).toString();
     default:
       return false;

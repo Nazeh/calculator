@@ -12,87 +12,102 @@ describe('when buttonName is a number', () => {
     buttonNumber = randomInteger();
   });
 
-  it('sets state.next to the buttonNumber if state.next is null', () => {
-    expect(process(emptyState, buttonNumber)).toEqual({
-      ...emptyState,
-      next: buttonNumber,
-      total: buttonNumber,
+  describe('when state.next is null', () => {
+    it('it sets state.next to the buttonName', () => {
+      expect(process(emptyState, buttonNumber)).toEqual({
+        ...emptyState,
+        next: buttonNumber,
+        total: buttonNumber,
+      });
     });
   });
 
-  it('appends the buttonNumber to state.next if it is NOT null', () => {
-    const next = randomInteger();
-    expect(process({ ...emptyState, next }, buttonNumber)).toEqual({
-      ...emptyState,
-      next: next + buttonNumber,
-      total: calculate([next + buttonNumber]),
+  describe('when state.next is number', () => {
+    it('it appends the buttonName to state.next', () => {
+      const next = randomInteger();
+      expect(process({ ...emptyState, next }, buttonNumber)).toEqual({
+        ...emptyState,
+        next: next + buttonNumber,
+        total: calculate([next + buttonNumber]),
+      });
     });
   });
 
-  it('sets state.next to the buttonNumber if state.next was operation', () => {
-    const queue = [randomInteger(), randomOperation(), randomInteger()];
-    const next = randomOperation();
-    const totalQueue = [...queue, next];
-    const total = calculate(totalQueue);
+  describe('when state.next is an operation', () => {
+    it('it sets state.next to the buttonName and append the operation ot state.queue', () => {
+      const queue = [randomInteger(), randomOperation(), randomInteger() + 1];
+      const next = randomOperation();
+      const totalQueue = [...queue, next];
+      const total = calculate(totalQueue);
 
-    expect(process({ queue, next, total }, buttonNumber)).toEqual({
-      queue: totalQueue,
-      next: buttonNumber,
-      total: calculate([...totalQueue, buttonNumber]),
+      expect(process({ queue, next, total }, buttonNumber)).toEqual({
+        queue: totalQueue,
+        next: buttonNumber,
+        total: calculate([...totalQueue, buttonNumber]),
+      });
     });
   });
 });
 
-// describe('when buttonName is an operation', () => {
-//   let RHS;
-//   let LHS;
-//   let operation;
-//   let buttonOperation;
-//   beforeEach(() => {
-//     RHS = randomInteger;
-//     LHS = randomInteger;
-//     operation = randomOperation;
-//     buttonOperation = randomOperation;
-//   });
+describe('when buttonName is an operation', () => {
+  let buttonOperation;
+  beforeEach(() => {
+    buttonOperation = randomOperation();
+  });
 
-//   describe('when RHS is NOT null', () => {
-//     it(`sets the LHS to the result of the state and the operation to
-//      the buttonOperation and resets the RHS`, () => {
-//       expect(
-//         process({ LHS, operation, RHS }, 'x'),
-//       ).toEqual({
-//         LHS: operate(LHS, RHS, operation),
-//         operation: 'x',
-//         RHS: null,
-//       });
-//     });
-//   });
+  describe('when state.next is null', () => {
+    it('it sets state.next to the buttonName and state.queue to ["0"]', () => {
+      expect(process(emptyState, buttonOperation)).toEqual({
+        queue: ['0'],
+        next: buttonOperation,
+        total: '0',
+      });
+    });
+  });
 
-//   describe('when RHS is Null', () => {
-//     it('sets the operation to the buttonOperation and maintains the LHS', () => {
-//       expect(process({ LHS }, buttonOperation)).toEqual({
-//         LHS,
-//         operation: buttonOperation,
-//       });
-//     });
+  describe('when state.next is number', () => {
+    it('it sets state.next to buttonName and appends state.next to state.queue', () => {
+      const queue = [randomInteger(), randomOperation()];
+      const next = randomInteger();
+      const totalQueue = [...queue, next];
+      const total = calculate(totalQueue);
 
-//     it('changes the existing operation to the buttonOperation and maintains the LHS', () => {
-//       expect(process({ LHS, operation }, buttonOperation)).toEqual({
-//         LHS,
-//         operation: buttonOperation,
-//       });
-//     });
+      expect(process({ queue, next, total }, buttonOperation)).toEqual({
+        queue: totalQueue,
+        next: buttonOperation,
+        total: calculate([...totalQueue, buttonOperation]),
+      });
+    });
+  });
 
-//     describe('when LHS and operation are Null', () => {
-//       it('sets the operation to the buttonOperation sets the LHS to 0', () => {
-//         expect(process({}, buttonOperation)).toEqual({
-//           LHS: '0',
-//           operation: buttonOperation,
-//         });
-//       });
-//     });
-//   });
-// });
+  describe('when state.next is an operation', () => {
+    it('it replaces state.next with buttonName', () => {
+      const queue = [randomInteger(), randomOperation(), randomInteger()];
+      const next = randomOperation();
+      const total = calculate([...queue, next]);
+
+      expect(process({ queue, next, total }, buttonOperation)).toEqual({
+        queue,
+        next: buttonOperation,
+        total,
+      });
+    });
+  });
+
+  describe('when total is division by zero', () => {
+    it('it resets state if the state ', () => {
+      const queue = [randomInteger(), '÷'];
+      const next = '0';
+
+      expect(
+        process(
+          { queue, next, total: calculate([...queue, next]) },
+          buttonOperation,
+        ),
+      ).toEqual(emptyState);
+    });
+  });
+});
 
 // describe('when buttonName is not operator or number', () => {
 //   describe(' when buttonName is "AC"', () => {
