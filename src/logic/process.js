@@ -1,4 +1,5 @@
-import operate from './operate';
+import { stat } from 'fs';
+import calculate from './calculate';
 
 const isNumber = (str) => /^[0-9]$/.test(str);
 const isOperation = (str) => /^['+','\-','x','÷']$/.test(str);
@@ -9,7 +10,20 @@ const process = (
   buttonName,
 ) => {
   if (isNumber(buttonName)) {
-    return { ...state, next: state.next ? state.next + buttonName : buttonName };
+    let { queue, next } = state;
+    if (!next) {
+      next = buttonName;
+    } else if (isOperation(next)) {
+      queue = [...state.queue, state.next];
+      next = buttonName;
+    } else {
+      next += buttonName;
+    }
+    return {
+      queue,
+      next,
+      total: calculate([...queue, next]),
+    };
   }
 
   if (isOperation(buttonName)) {

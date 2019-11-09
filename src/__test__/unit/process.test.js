@@ -1,8 +1,9 @@
 import _ from 'lodash';
+import calculate from '../../logic/calculate';
 import process from '../../logic/process';
 
 const randomInteger = () => `${Math.floor(Math.random() * 10)}`;
-const randomOperation = _.sample(['+', '-', 'x', '÷']);
+const randomOperation = () => _.sample(['+', '-', 'x', '÷']);
 const emptyState = { queue: [], next: null, total: null };
 
 describe('when buttonName is a number', () => {
@@ -11,43 +12,33 @@ describe('when buttonName is a number', () => {
     buttonNumber = randomInteger();
   });
 
-  describe('when operation is null', () => {
-    it('sets state.next to the buttonNumber if state.next is null', () => {
-      expect(process(emptyState, buttonNumber)).toEqual({
-        ...emptyState,
-        next: buttonNumber,
-      });
-    });
-
-    it('appends the buttonNumber to state.next if it is NOT null', () => {
-      const next = randomInteger();
-      expect(process({ ...emptyState, next }, buttonNumber)).toEqual({
-        ...emptyState,
-        next: next + buttonNumber,
-      });
+  it('sets state.next to the buttonNumber if state.next is null', () => {
+    expect(process(emptyState, buttonNumber)).toEqual({
+      ...emptyState,
+      next: buttonNumber,
+      total: buttonNumber,
     });
   });
 
-  describe('when operation is NOT null', () => {
-    let operation;
-    beforeEach(() => {
-      operation = randomOperation;
+  it('appends the buttonNumber to state.next if it is NOT null', () => {
+    const next = randomInteger();
+    expect(process({ ...emptyState, next }, buttonNumber)).toEqual({
+      ...emptyState,
+      next: next + buttonNumber,
+      total: calculate([next + buttonNumber]),
     });
+  });
 
-    it('sets the LHS to the buttonNumber if RHS is null', () => {
-      expect(process({ operation }, buttonNumber)).toEqual({
-        RHS: buttonNumber,
-      });
-    });
+  it('sets state.next to the buttonNumber if state.next was operation', () => {
+    const queue = [randomInteger(), randomOperation(), randomInteger()];
+    const next = randomOperation();
+    const totalQueue = [...queue, next];
+    const total = calculate(totalQueue);
 
-    it('appends the buttonNumber to RHS if RHS is NOT null and keeps the rest', () => {
-      const LHS = randomInteger;
-      const RHS = randomInteger;
-      expect(process({ LHS, operation, RHS }, buttonNumber)).toEqual({
-        LHS,
-        operation,
-        RHS: RHS + buttonNumber,
-      });
+    expect(process({ queue, next, total }, buttonNumber)).toEqual({
+      queue: totalQueue,
+      next: buttonNumber,
+      total: calculate([...totalQueue, buttonNumber]),
     });
   });
 });
