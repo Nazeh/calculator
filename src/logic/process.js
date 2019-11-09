@@ -4,15 +4,12 @@ const isNumber = (str) => /^[0-9]$/.test(str);
 const isOperation = (str) => /^['+','\-','x','÷']$/.test(str);
 const tryAddDot = (str) => (str.includes('.') ? str : `${str}.`);
 
-const calculate = (
-  state = { total: null, operation: null, next: null },
+const process = (
+  state = { queue: [], next: null, total: null },
   buttonName,
 ) => {
   if (isNumber(buttonName)) {
-    if (state.operation) {
-      return { ...state, next: `${state.next || ''}${buttonName}` };
-    }
-    return { total: `${state.total || ''}${buttonName}` };
+    return { ...state, next: state.next ? state.next + buttonName : buttonName };
   }
 
   if (isOperation(buttonName)) {
@@ -74,4 +71,4 @@ const calculate = (
   return false;
 };
 
-export default calculate;
+export default process;
