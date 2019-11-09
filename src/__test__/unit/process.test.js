@@ -6,6 +6,9 @@ const randomInteger = () => `${Math.floor(Math.random() * 10)}`;
 const randomOperation = () => _.sample(['+', '-', 'x', '÷']);
 const emptyState = { queue: [], next: null, total: null };
 
+describe('when buttonName is mutating', () => {
+
+});
 describe('when buttonName is a number', () => {
   let buttonNumber;
   beforeEach(() => {

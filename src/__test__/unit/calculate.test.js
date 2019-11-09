@@ -68,12 +68,14 @@ describe('dot "."', () => {
 });
 
 describe('complicated serial of buttons', () => {
-  it('returns 10 + 2 x 3 = 36', () => {
-    expect(calculate(['10', '+', '2', 'x', '3', '+'])).toEqual('36');
+  it('returns 10 + 2 x 3 - 1 = 15', () => {
+    expect(calculate(['10', '+', '2', 'x', '3', '-', '1'])).toEqual('15');
   });
 
-  it('returns 10 x 2 + 3 = 23', () => {
-    expect(calculate(['10', 'x', '2', '+', '3', '='])).toEqual('23');
+  it('returns 0 - 5 + 10 x 2 = 18', () => {
+    expect(calculate(['0', '-', '5', '+', '10', 'x', '2', '+'])).toEqual(
+      '15',
+    );
   });
 
   it('can calculate up to 100 operations', () => {
