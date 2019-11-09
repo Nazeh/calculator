@@ -35,50 +35,36 @@ const process = (
     };
   }
 
-  // switch (buttonName) {
-  //   case 'AC':
-  //     return { total: null, next: null, operation: null };
-  //   case '+/-':
-  //     if (state.operation) {
-  //       return state.next
-  //         ? { ...state, next: operate(state.next, -1, 'x') }
-  //         : { ...state };
-  //     }
-  //     return state.total
-  //       ? { ...state, total: operate(state.total, -1, 'x') }
-  //       : { ...state };
-  //   case '%':
-  //     if (state.operation) {
-  //       return state.next
-  //         ? { ...state, next: operate(state.next, '100', '÷') }
-  //         : { ...state };
-  //     }
-  //     return state.total
-  //       ? { ...state, total: operate(state.total, '100', '÷') }
-  //       : { ...state };
-  //   case '.':
-  //     if (state.operation) {
-  //       return { ...state, next: state.next ? tryAddDot(state.next) : '0.' };
-  //     }
-  //     return { total: state.total ? tryAddDot(state.total) : '0.' };
-  //   case '=':
-  //     if (state.next) {
-  //       return {
-  //         total: operate(state.total, state.next, state.operation),
-  //         operation: null,
-  //         next: null,
-  //       };
-  //     }
-  //     if (state.operation) {
-  //       return {
-  //         ...state,
-  //         total: operate(state.total, state.next, state.operation),
-  //         operation: null,
-  //       };
-  //     }
-  //     return { ...state };
-  //   default:
-  // }
+  switch (buttonName) {
+    case 'AC':
+      return { queue: [], next: null, total: null };
+    case '=':
+      return { queue: [state.total], next: null, total: null };
+    case '+/-':
+      if (state.operation) {
+        return state.next
+          ? { ...state, next: operate(state.next, -1, 'x') }
+          : { ...state };
+      }
+      return state.total
+        ? { ...state, total: operate(state.total, -1, 'x') }
+        : { ...state };
+    case '%':
+      if (state.operation) {
+        return state.next
+          ? { ...state, next: operate(state.next, '100', '÷') }
+          : { ...state };
+      }
+      return state.total
+        ? { ...state, total: operate(state.total, '100', '÷') }
+        : { ...state };
+    case '.':
+      if (state.operation) {
+        return { ...state, next: state.next ? tryAddDot(state.next) : '0.' };
+      }
+      return { total: state.total ? tryAddDot(state.total) : '0.' };
+    default:
+  }
 
   return false;
 };

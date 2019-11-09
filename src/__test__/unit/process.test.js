@@ -95,7 +95,7 @@ describe('when buttonName is an operation', () => {
   });
 
   describe('when total is division by zero', () => {
-    it('it resets state if the state ', () => {
+    it('return a reseted state', () => {
       const queue = [randomInteger(), '÷'];
       const next = '0';
 
@@ -109,27 +109,29 @@ describe('when buttonName is an operation', () => {
   });
 });
 
+describe('when buttonName is terminal', () => {
+  describe('when buttonName is "AC"', () => {
+    it('return a reseted state', () => {
+      expect(process({
+        queue: [randomInteger(), randomOperation()],
+        next: randomInteger(),
+        total: randomInteger(),
+      }, 'AC')).toEqual(emptyState);
+    });
+  });
+
+  describe('when buttonName is "="', () => {
+    it('sets queue to [total] and resests the next and total', () => {
+      const total = randomInteger();
+      expect(process({ ...emptyState, total }, '=')).toEqual({
+        ...emptyState,
+        queue: [total],
+      });
+    });
+  });
+});
+
 // describe('when buttonName is not operator or number', () => {
-//   describe(' when buttonName is "AC"', () => {
-//     it('return a reseted state', () => {
-//       expect(process({}, 'AC')).toEqual({
-//         LHS: null,
-//         RHS: null,
-//         operation: null,
-//       });
-
-//       expect(process({
-//         LHS: randomInteger,
-//         operation: randomOperation,
-//         RHS: randomInteger,
-//       }, 'AC')).toEqual({
-//         LHS: null,
-//         RHS: null,
-//         operation: null,
-//       });
-//     });
-//   });
-
 //   describe('when buttonName is "+/-"', () => {
 //     let LHS;
 //     let RHS;
@@ -266,40 +268,6 @@ describe('when buttonName is an operation', () => {
 //           operation,
 //           RHS,
 //         });
-//       });
-//     });
-//   });
-
-//   describe('when buttonName is "="', () => {
-//     let LHS;
-//     let operation;
-//     let RHS;
-
-//     beforeEach(() => {
-//       LHS = randomInteger;
-//       operation = randomOperation;
-//       RHS = randomInteger;
-//     });
-
-//     it('sets LHS to the result of existing operation and restes the rest', () => {
-//       expect(process({ LHS, operation, RHS }, '=')).toEqual({
-//         LHS: operate(LHS, RHS, operation),
-//         operation: null,
-//         RHS: null,
-//       });
-//     });
-
-//     it('keeps the LHS and resets the operation if RHS is null', () => {
-//       expect(process({ LHS, operation }, '=')).toEqual({
-//         LHS,
-//         operation: null,
-//       });
-//     });
-
-//     it('returns the same state if operation is null', () => {
-//       expect(process({ LHS, operation: null }, '=')).toEqual({
-//         LHS,
-//         operation: null,
 //       });
 //     });
 //   });
