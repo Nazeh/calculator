@@ -9,7 +9,6 @@ const App = () => {
   const [state, setState] = useState({ queue: [], next: null, total: null });
 
   const handleClick = (buttonName) => {
-    console.log(state);
     setState(process({ ...state }, buttonName));
   };
 

@@ -247,6 +247,39 @@ describe('when buttonName mutates next', () => {
       });
     });
   });
+
+  describe('when buttonName is +/-', () => {
+    describe('when state.next is a number', () => {
+      it('negates the state.next', () => {
+        const queue = [randomInteger(), randomOperation()];
+        const next = randomInteger() + 1;
+        const negativeNext = `-${next}`;
+        const total = calculate([...queue, next]);
+
+        expect(process({ queue, next, total }, '+/-')).toEqual({
+          queue,
+          next: negativeNext,
+          total: calculate([...queue, negativeNext]),
+        });
+
+        expect(process({ queue, next: negativeNext, total }, '+/-')).toEqual({
+          queue,
+          next,
+          total: calculate([...queue, next]),
+        });
+      });
+    });
+
+    describe('when state.next is Not a number', () => {
+      it('returns the same state', () => {
+        const next = randomOperation();
+        expect(process({ ...emptyState, next }, '+/-')).toEqual({
+          ...emptyState,
+          next,
+        });
+      });
+    });
+  });
 });
 
 // describe('when buttonName is not operator or number', () => {

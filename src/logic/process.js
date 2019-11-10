@@ -1,8 +1,9 @@
 import calculate from './calculate';
 
-const isNumber = (str) => /^[0-9]$/.test(str);
+const isNumber = (str) => /^\d*[.-]?\d+$/.test(str);
 const isOperation = (str) => /^['+','\-','x','÷']$/.test(str);
 const tryAddDot = (str) => (str.includes('.') ? str : `${str}.`);
+const negate = (str) => (str[0] === '-' ? str.slice(1) : `-${str}`);
 
 const process = (
   state = { queue: [], next: null, total: null },
@@ -63,15 +64,15 @@ const process = (
         next: tryAddDot(state.next),
         total: calculate([...state.queue, state.next]),
       };
-      // case '+/-':
-      //   if (state.operation) {
-      //     return state.next
-      //       ? { ...state, next: operate(state.next, -1, 'x') }
-      //       : { ...state };
-      //   }
-      //   return state.total
-      //     ? { ...state, total: operate(state.total, -1, 'x') }
-      //     : { ...state };
+    case '+/-':
+      return isNumber(state.next)
+        ? {
+          ...state,
+          next: negate(state.next),
+          total: calculate([...state.queue, negate(state.next)]),
+        }
+        : { ...state };
+
       // case '%':
       //   if (state.operation) {
       //     return state.next
