@@ -4,7 +4,7 @@ const process = (
   state = { queue: [], next: null, total: null },
   buttonName,
 ) => {
-  const isNumber = (str) => /^\-?\d*\.?\d+%*$/.test(str);
+  const isNumber = (str) => /^-?\d*\.?\d+%*$/.test(str);
   const isOperation = (str) => /^['+','\-','x','÷']$/.test(str);
 
   if (isNumber(buttonName)) {

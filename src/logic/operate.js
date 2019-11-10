@@ -4,7 +4,7 @@ const big100 = Big(100);
 const bigZero = Big(0);
 const bigOne = Big(1);
 
-const sanitizePercentage = (number) => (/^\-?\d*\.?\d+%+$/.test(number)
+const sanitizePercentage = (number) => (/^-?\d*\.?\d+%+$/.test(number)
   ? sanitizePercentage(number.slice(0, -1)).div(big100) : Big(number));
 
 const sanitizeRHS = (RHS, operation) => {
