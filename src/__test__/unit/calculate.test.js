@@ -1,298 +1,88 @@
 import _ from 'lodash';
-import operate from '../../logic/operate';
 import calculate from '../../logic/calculate';
 
-const randomInteger = `${Math.floor(Math.random() * 10)}`;
-const randomOperation = _.sample(['+', '-', 'x', '÷']);
-
-describe('when buttonName is a number', () => {
-  let buttonNumber;
-  beforeEach(() => {
-    buttonNumber = randomInteger;
+describe('when stack length is less than complete stack of operations', () => {
+  it('returns the first element in stack if stack length === 1', () => {
+    expect(calculate(['1'])).toEqual('1');
   });
 
-  describe('when operation is null', () => {
-    it('sets the total to the buttonNumber if total is null', () => {
-      expect(calculate({}, buttonNumber)).toMatchObject({
-        total: buttonNumber,
-      });
-    });
-
-    it('appends the buttonNumber to total if total is NOT null', () => {
-      const total = randomInteger;
-      expect(calculate({ total }, buttonNumber)).toMatchObject({
-        total: total + buttonNumber,
-      });
-    });
+  it('returns the first element in stack if stack length < 3', () => {
+    expect(calculate(['1', 'x'])).toEqual('1');
   });
 
-  describe('when operation is NOT null', () => {
-    let operation;
-    beforeEach(() => {
-      operation = randomOperation;
-    });
-
-    it('sets the total to the buttonNumber if next is null', () => {
-      expect(calculate({ operation }, buttonNumber)).toMatchObject({
-        next: buttonNumber,
-      });
-    });
-
-    it('appends the buttonNumber to next if next is NOT null and keeps the rest', () => {
-      const total = randomInteger;
-      const next = randomInteger;
-      expect(calculate({ total, operation, next }, buttonNumber)).toMatchObject({
-        total,
-        operation,
-        next: next + buttonNumber,
-      });
-    });
+  it('returns the result of the stack excluding last element if length is even', () => {
+    expect(calculate(['1', '+', '1', '+'])).toEqual('2');
   });
 });
 
-describe('when buttonName is an operation', () => {
-  let next;
-  let total;
-  let operation;
-  let buttonOperation;
-  beforeEach(() => {
-    next = randomInteger;
-    total = randomInteger;
-    operation = randomOperation;
-    buttonOperation = randomOperation;
+describe('simple addition', () => {
+  it('returns 1+1 = 2', () => {
+    expect(calculate(['1', '+', '1', '='])).toEqual('2');
   });
 
-  describe('when next is NOT null', () => {
-    it(`sets the total to the result of the state and the operation to
-     the buttonOperation and resets the next`, () => {
-      expect(
-        calculate({ total, operation, next }, 'x'),
-      ).toMatchObject({
-        total: operate(total, next, operation),
-        operation: 'x',
-        next: null,
-      });
-    });
-  });
-
-  describe('when next is Null', () => {
-    it('sets the operation to the buttonOperation and maintains the total', () => {
-      expect(calculate({ total }, buttonOperation)).toMatchObject({
-        total,
-        operation: buttonOperation,
-      });
-    });
-
-    it('changes the existing operation to the buttonOperation and maintains the total', () => {
-      expect(calculate({ total, operation }, buttonOperation)).toMatchObject({
-        total,
-        operation: buttonOperation,
-      });
-    });
-
-    describe('when total and operation are Null', () => {
-      it('sets the operation to the buttonOperation sets the total to 0', () => {
-        expect(calculate({}, buttonOperation)).toMatchObject({
-          total: '0',
-          operation: buttonOperation,
-        });
-      });
-    });
+  it('returns 12+1 = 13', () => {
+    expect(calculate(['12', '+', '1', '='])).toEqual('13');
   });
 });
 
-describe('when buttonName is not operator or number', () => {
-  describe(' when buttonName is "AC"', () => {
-    it('return a reseted state', () => {
-      expect(calculate({}, 'AC')).toMatchObject({
-        total: null,
-        next: null,
-        operation: null,
-      });
+describe('simple subtraction', () => {
+  it('returns 10 - 2 = 8', () => {
+    expect(calculate(['10', '-', '2', '='])).toEqual('8');
+  });
+});
 
-      expect(calculate({
-        total: randomInteger,
-        operation: randomOperation,
-        next: randomInteger,
-      }, 'AC')).toMatchObject({
-        total: null,
-        next: null,
-        operation: null,
-      });
-    });
+describe('simple multiplications', () => {
+  it('returns 10 x 2 = 20', () => {
+    expect(calculate(['10', 'x', '2', '='])).toEqual('20');
+  });
+});
+
+describe('simple division', () => {
+  it('returns 10 ÷ 2 = 5', () => {
+    expect(calculate(['10', '÷', '2', '='])).toEqual('5');
+  });
+});
+
+describe('simple percentage', () => {
+  it('returns 10% >> 0.1', () => {
+    expect(calculate(['10%'])).toEqual('0.1');
   });
 
-  describe('when buttonName is "+/-"', () => {
-    let total;
-    let next;
-    let operation;
+  it('returns 5 + 10% >> 0.1', () => {
+    expect(calculate(['5', '+', '10%'])).toEqual('5.1');
+  });
+});
 
-    beforeEach(() => {
-      total = randomInteger;
-      next = randomInteger;
-      operation = randomOperation;
-    });
-
-    describe('if operation is NOT null', () => {
-      it('negates the value of next if it exists', () => {
-        expect(calculate({ total, operation, next }, '+/-')).toMatchObject({
-          total,
-          operation,
-          next: operate(next, -1, 'x'),
-        });
-      });
-
-      it('returns the same state if next is null', () => {
-        expect(calculate({ total, operation }, '+/-')).toEqual({
-          total,
-          operation,
-        });
-      });
-    });
-
-    describe('if operation is null', () => {
-      it('negates the value of total it exists', () => {
-        expect(calculate({ total }, '+/-')).toMatchObject({
-          total: operate(total, -1, 'x'),
-        });
-      });
-
-      it('returns the same state if total is null', () => {
-        expect(calculate({}, '+/-')).toEqual({});
-      });
-    });
+describe('dot "."', () => {
+  it('returns 10. >> 10', () => {
+    expect(calculate(['10.'])).toEqual('10');
   });
 
-  describe('when buttonName is "%"', () => {
-    let total;
-    let next;
-    let operation;
-
-    beforeEach(() => {
-      total = randomInteger;
-      next = randomInteger;
-      operation = randomOperation;
-    });
-
-    describe('if operation is NOT null', () => {
-      it('divides the value of next by 100 if it exists', () => {
-        expect(calculate({ total, operation, next }, '%')).toMatchObject({
-          total,
-          operation,
-          next: operate(next, '100', '÷'),
-        });
-      });
-
-      it('returns the same state if next is null', () => {
-        expect(calculate({ total, operation }, '%')).toEqual({
-          total,
-          operation,
-        });
-      });
-    });
-
-    describe('if operation is null', () => {
-      it('divides the value of total by 100 it exists', () => {
-        expect(calculate({ total }, '%')).toMatchObject({
-          total: operate(total, '100', '÷'),
-        });
-      });
-
-      it('returns the same state if total is null', () => {
-        expect(calculate({}, '%')).toEqual({});
-      });
-    });
+  it('returns 10 + 5.  = 15.', () => {
+    expect(calculate(['10', '+', '5.'])).toEqual('15');
   });
 
-  describe('when buttonName is "."', () => {
-    let total;
-    beforeEach(() => {
-      total = randomInteger;
-    });
+  it('returns 10 + 5.2  = 15.2', () => {
+    expect(calculate(['10', '+', '5.2'])).toEqual('15.2');
+  });
+});
 
-    describe('when operation is null', () => {
-      it('sets total to "0." if total was null', () => {
-        expect(calculate({}, '.')).toMatchObject({ total: '0.' });
-      });
-
-      it('appends total with "."', () => {
-        expect(calculate({ total }, '.')).toMatchObject({
-          total: `${total}.`,
-        });
-      });
-
-      it('keeps total if it contains"."', () => {
-        total = `${total}.`;
-        expect(calculate({ total }, '.')).toMatchObject({ total });
-      });
-    });
-
-    describe('when operation is NOT null', () => {
-      let next;
-      let operation;
-      beforeEach(() => {
-        next = randomInteger;
-        operation = randomOperation;
-      });
-
-      it('sets next to "0." if next was null', () => {
-        expect(calculate({ total, operation }, '.')).toMatchObject({
-          total,
-          operation,
-          next: '0.',
-        });
-      });
-
-      it('appends next with "."', () => {
-        expect(calculate({ total, operation, next }, '.')).toMatchObject({
-          total,
-          operation,
-          next: `${next}.`,
-        });
-      });
-
-      it('keeps total if it contains"."', () => {
-        next = `${next}.`;
-        expect(calculate({ total, operation, next }, '.')).toMatchObject({
-          total,
-          operation,
-          next,
-        });
-      });
-    });
+describe('complicated serial of buttons', () => {
+  it('returns 10 + 2 x 3 - 1 = 15', () => {
+    expect(calculate(['10', '+', '2', 'x', '3', '-', '1'])).toEqual('15');
   });
 
-  describe('when buttonName is "="', () => {
-    let total;
-    let operation;
-    let next;
+  it('returns 0 - 5 + 10 x 2 = 18', () => {
+    expect(calculate(['0', '-', '5', '+', '10', 'x', '2', '+'])).toEqual(
+      '15',
+    );
+  });
 
-    beforeEach(() => {
-      total = randomInteger;
-      operation = randomOperation;
-      next = randomInteger;
-    });
-
-    it('sets total to the result of existing operation and restes the rest', () => {
-      expect(calculate({ total, operation, next }, '=')).toMatchObject({
-        total: operate(total, next, operation),
-        operation: null,
-        next: null,
-      });
-    });
-
-    it('keeps the total and resets the operation if next is null', () => {
-      expect(calculate({ total, operation }, '=')).toMatchObject({
-        total,
-        operation: null,
-      });
-    });
-
-    it('returns the same state if operation is null', () => {
-      expect(calculate({ total, operation: null }, '=')).toMatchObject({
-        total,
-        operation: null,
-      });
-    });
+  it('can calculate up to 100 operations', () => {
+    expect(
+      calculate(
+        _.flatten(_.range(100).map(() => ['1', 'x'])),
+      ),
+    ).toEqual('1');
   });
 });
