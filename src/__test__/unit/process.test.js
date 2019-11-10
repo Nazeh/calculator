@@ -6,9 +6,7 @@ const randomInteger = () => `${Math.floor(Math.random() * 10)}`;
 const randomOperation = () => _.sample(['+', '-', 'x', '÷']);
 const emptyState = { queue: [], next: null, total: null };
 
-describe('when buttonName is mutating', () => {
-
-});
+describe('when buttonName is mutating', () => {});
 describe('when buttonName is a number', () => {
   let buttonNumber;
   beforeEach(() => {
@@ -146,10 +144,7 @@ describe('when buttonName is an operation', () => {
       const next = '0';
       const totalQueue = [...queue, next];
       expect(
-        process(
-          { queue, next, total: calculate(totalQueue) },
-          buttonOperation,
-        ),
+        process({ queue, next, total: calculate(totalQueue) }, buttonOperation),
       ).toEqual({
         queue: totalQueue,
         next: buttonOperation,
@@ -185,13 +180,71 @@ describe('when buttonName is terminal', () => {
       });
     });
 
-    it('does not change the state if it was division by zero', () => {
+    it('returns the state unchanged if it contained division by zero', () => {
       const queue = [randomInteger(), '÷'];
       const next = '0';
       const total = calculate([...queue, next]);
       const state = { queue, next, total };
 
       expect(process(state, '=')).toEqual(state);
+    });
+  });
+});
+
+describe('when buttonName mutates next', () => {
+  describe('when buttonName is dot"."', () => {
+    describe('when state.next is null', () => {
+      it('sets state.next to the "0."', () => {
+        expect(process(emptyState, '.')).toEqual({
+          ...emptyState,
+          next: '0.',
+        });
+      });
+
+      it('resets the queue and sets state.next to the "0."', () => {
+        const queue = [randomInteger()];
+        expect(process({ ...emptyState, queue }, '.')).toEqual({
+          ...emptyState,
+          next: '0.',
+        });
+      });
+    });
+
+    describe('when state.next is number', () => {
+      it('appends the "." to state.next', () => {
+        const queue = [randomInteger(), randomOperation()];
+        const next = randomInteger();
+        const total = calculate([...queue, next]);
+        const state = { queue, next, total };
+
+        expect(process(state, '.')).toEqual({
+          ...state,
+          next: `${next}.`,
+        });
+      });
+
+      it('doesnt append "." to state.next if it already contained a dot', () => {
+        const queue = [randomInteger(), randomOperation()];
+        const next = `${randomInteger()}.`;
+        const total = calculate([...queue, next]);
+        const state = { queue, next, total };
+        expect(process(state, '.')).toEqual(state);
+      });
+    });
+
+    describe('when state.next is an operation', () => {
+      it('sets next to "0." and push the operation to the queue', () => {
+        const queue = [randomInteger()];
+        const next = randomOperation();
+        const total = calculate([...queue, next]);
+        const state = { queue, next, total };
+
+        expect(process(state, '.')).toEqual({
+          ...state,
+          queue: [...queue, next],
+          next: '0.',
+        });
+      });
     });
   });
 });
