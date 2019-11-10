@@ -1,24 +1,23 @@
 import React, { useState } from 'react';
 import Display from './Display';
 import ButtonPanel from './ButtonPanel';
-import calculate from '../logic/calculate';
+import process from '../logic/process';
 
 import './App.scss';
 
 const App = () => {
-  const [state, setState] = useState({
-    total: null,
-    next: '0',
-    operation: null,
-  });
+  const [state, setState] = useState({ queue: [], next: null, total: null });
 
   const handleClick = (buttonName) => {
-    setState(calculate({ ...state }, buttonName));
+    setState(process({ ...state }, buttonName));
   };
 
   return (
     <div id="App">
-      <Display total={state.next || state.total || '0'} />
+      <Display
+        queue={[...state.queue, state.next]}
+        total={state.total || '0'}
+      />
       <ButtonPanel clickHandler={handleClick} />
     </div>
   );

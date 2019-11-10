@@ -1,20 +1,31 @@
 import Big from 'big.js';
 
-const operate = (n1, n2, operation) => {
-  const firstNumber = Big(n1 || '0');
-  const defaultN2 = ['÷', 'x'].includes(operation) ? '1' : '0';
-  const secondNumber = Big(n2 === 0 ? '0' : (n2 || defaultN2));
+const big100 = Big(100);
+const bigZero = Big(0);
+const bigOne = Big(1);
+
+const sanitizePercentage = (number) => (/^-?\d*\.?\d+%+$/.test(number)
+  ? sanitizePercentage(number.slice(0, -1)).div(big100) : Big(number));
+
+const sanitizeRHS = (RHS, operation) => {
+  if (`${RHS}` !== 'null') return sanitizePercentage(RHS);
+  return operation === '÷' || operation === 'x' ? bigOne : bigZero;
+};
+
+const operate = (LHS, operation, RHS) => {
+  LHS = LHS ? sanitizePercentage(LHS) : bigZero;
+  RHS = sanitizeRHS(RHS, operation);
 
   switch (operation) {
     case '+':
-      return firstNumber.plus(secondNumber).toString();
+      return LHS.plus(RHS).toString();
     case '-':
-      return firstNumber.minus(secondNumber).toString();
+      return LHS.minus(RHS).toString();
     case 'x':
-      return firstNumber.times(secondNumber).toString();
+      return LHS.times(RHS).toString();
     case '÷':
-      if (secondNumber.toString() === '0') return "Can't divide by Zero";
-      return firstNumber.div(secondNumber).toString();
+      if (`${RHS}` === '0') return false;
+      return LHS.div(RHS).toString();
     default:
       return false;
   }
