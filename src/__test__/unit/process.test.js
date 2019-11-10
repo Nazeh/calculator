@@ -6,7 +6,6 @@ const randomInteger = () => `${Math.floor(Math.random() * 10)}`;
 const randomOperation = () => _.sample(['+', '-', 'x', '÷']);
 const emptyState = { queue: [], next: null, total: null };
 
-describe('when buttonName is mutating', () => {});
 describe('when buttonName is a number', () => {
   let buttonNumber;
   beforeEach(() => {
@@ -53,7 +52,7 @@ describe('when buttonName is a number', () => {
       expect(process({ queue, next, total }, buttonNumber)).toEqual({
         queue: totalQueue,
         next: buttonNumber,
-        total: calculate([...totalQueue, buttonNumber]),
+        total: calculate([...totalQueue, buttonNumber]) || 'Cannot divide by zero',
       });
     });
 
@@ -280,146 +279,43 @@ describe('when buttonName mutates next', () => {
       });
     });
   });
+
+  describe('when buttonName is "%"', () => {
+    describe('when state.next is a number', () => {
+      it('adds % to state.next', () => {
+        const queue = [randomInteger(), randomOperation()];
+        const next = randomInteger();
+        expect(process({ ...emptyState, next, queue }, '%')).toEqual({
+          queue,
+          next: `${next}%`,
+          total: calculate([...queue, `${next}%`]),
+        });
+
+        expect(process({ ...emptyState, next: `${next}%`, queue }, '%')).toEqual({
+          queue,
+          next: `${next}%%`,
+          total: calculate([...queue, `${next}%%`]),
+        });
+      });
+    });
+
+    describe('when state.next is not a number', () => {
+      it('return the state unchanged', () => {
+        const queue = [randomInteger()];
+        const next = randomOperation();
+        const total = calculate([...queue, next]);
+        expect(process({ next, queue, total }, '%')).toEqual({
+          next,
+          queue,
+          total,
+        });
+
+        expect(process({ next: null, queue, total }, '%')).toEqual({
+          next: null,
+          queue,
+          total,
+        });
+      });
+    });
+  });
 });
-
-// describe('when buttonName is not operator or number', () => {
-//   describe('when buttonName is "+/-"', () => {
-//     let LHS;
-//     let RHS;
-//     let operation;
-
-//     beforeEach(() => {
-//       LHS = randomInteger;
-//       RHS = randomInteger;
-//       operation = randomOperation;
-//     });
-
-//     describe('if operation is NOT null', () => {
-//       it('negates the value of RHS if it exists', () => {
-//         expect(process({ LHS, operation, RHS }, '+/-')).toEqual({
-//           LHS,
-//           operation,
-//           RHS: operate(RHS, -1, 'x'),
-//         });
-//       });
-
-//       it('returns the same state if RHS is null', () => {
-//         expect(process({ LHS, operation }, '+/-')).toEqual({
-//           LHS,
-//           operation,
-//         });
-//       });
-//     });
-
-//     describe('if operation is null', () => {
-//       it('negates the value of LHS it exists', () => {
-//         expect(process({ LHS }, '+/-')).toEqual({
-//           LHS: operate(LHS, -1, 'x'),
-//         });
-//       });
-
-//       it('returns the same state if LHS is null', () => {
-//         expect(process({}, '+/-')).toEqual({});
-//       });
-//     });
-//   });
-
-//   describe('when buttonName is "%"', () => {
-//     let LHS;
-//     let RHS;
-//     let operation;
-
-//     beforeEach(() => {
-//       LHS = randomInteger;
-//       RHS = randomInteger;
-//       operation = randomOperation;
-//     });
-
-//     describe('if operation is NOT null', () => {
-//       it('divides the value of RHS by 100 if it exists', () => {
-//         expect(process({ LHS, operation, RHS }, '%')).toEqual({
-//           LHS,
-//           operation,
-//           RHS: operate(RHS, '100', '÷'),
-//         });
-//       });
-
-//       it('returns the same state if RHS is null', () => {
-//         expect(process({ LHS, operation }, '%')).toEqual({
-//           LHS,
-//           operation,
-//         });
-//       });
-//     });
-
-//     describe('if operation is null', () => {
-//       it('divides the value of LHS by 100 it exists', () => {
-//         expect(process({ LHS }, '%')).toEqual({
-//           LHS: operate(LHS, '100', '÷'),
-//         });
-//       });
-
-//       it('returns the same state if LHS is null', () => {
-//         expect(process({}, '%')).toEqual({});
-//       });
-//     });
-//   });
-
-//   describe('when buttonName is "."', () => {
-//     let LHS;
-//     beforeEach(() => {
-//       LHS = randomInteger;
-//     });
-
-//     describe('when operation is null', () => {
-//       it('sets LHS to "0." if LHS was null', () => {
-//         expect(process({}, '.')).toEqual({ LHS: '0.' });
-//       });
-
-//       it('appends LHS with "."', () => {
-//         expect(process({ LHS }, '.')).toEqual({
-//           LHS: `${LHS}.`,
-//         });
-//       });
-
-//       it('keeps LHS if it contains"."', () => {
-//         LHS = `${LHS}.`;
-//         expect(process({ LHS }, '.')).toEqual({ LHS });
-//       });
-//     });
-
-//     describe('when operation is NOT null', () => {
-//       let RHS;
-//       let operation;
-//       beforeEach(() => {
-//         RHS = randomInteger;
-//         operation = randomOperation;
-//       });
-
-//       it('sets RHS to "0." if RHS was null', () => {
-//         expect(process({ LHS, operation }, '.')).toEqual({
-//           LHS,
-//           operation,
-//           RHS: '0.',
-//         });
-//       });
-
-//       it('appends RHS with "."', () => {
-//         expect(process({ LHS, operation, RHS }, '.')).toEqual({
-//           LHS,
-//           operation,
-//           RHS: `${RHS}.`,
-//         });
-//       });
-
-//       it('keeps LHS if it contains"."', () => {
-//         RHS = `${RHS}.`;
-//         expect(process({ LHS, operation, RHS }, '.')).toEqual({
-//           LHS,
-//           operation,
-//           RHS,
-//         });
-//       });
-//     });
-//   });
-// });

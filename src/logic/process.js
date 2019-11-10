@@ -1,14 +1,12 @@
 import calculate from './calculate';
 
-const isNumber = (str) => /^\d*[.-]?\d+$/.test(str);
-const isOperation = (str) => /^['+','\-','x','÷']$/.test(str);
-const tryAddDot = (str) => (str.includes('.') ? str : `${str}.`);
-const negate = (str) => (str[0] === '-' ? str.slice(1) : `-${str}`);
-
 const process = (
   state = { queue: [], next: null, total: null },
   buttonName,
 ) => {
+  const isNumber = (str) => /^\-?\d*\.?\d+%*$/.test(str);
+  const isOperation = (str) => /^['+','\-','x','÷']$/.test(str);
+
   if (isNumber(buttonName)) {
     let { next, queue } = state;
     if (!next) return { queue: [], next: buttonName, total: buttonName };
@@ -43,6 +41,9 @@ const process = (
     };
   }
 
+  const tryAddDot = (str) => (str.includes('.') ? str : `${str}.`);
+  const negate = (str) => (str[0] === '-' ? str.slice(1) : `-${str}`);
+
   switch (buttonName) {
     case 'AC':
       return { queue: [], next: null, total: null };
@@ -73,16 +74,14 @@ const process = (
         }
         : { ...state };
 
-      // case '%':
-      //   if (state.operation) {
-      //     return state.next
-      //       ? { ...state, next: operate(state.next, '100', '÷') }
-      //       : { ...state };
-      //   }
-      //   return state.total
-      //     ? { ...state, total: operate(state.total, '100', '÷') }
-      //     : { ...state };
-
+    case '%':
+      return isNumber(state.next)
+        ? {
+          ...state,
+          next: `${state.next}%`,
+          total: calculate([...state.queue, `${state.next}%`]),
+        }
+        : { ...state };
     default:
   }
 
