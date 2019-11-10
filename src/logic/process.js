@@ -18,13 +18,14 @@ const process = (
       next += buttonName;
     }
 
-    return { queue, next, total: calculate([...queue, next]) };
+    return {
+      queue,
+      next,
+      total: calculate([...queue, next]) || 'Cannot divide by zero',
+    };
   }
 
   if (isOperation(buttonName)) {
-    if (state.total === 'Cannot divide by zero‬') {
-      return { queue: [], next: null, total: null };
-    }
     if (!state.next) {
       return {
         queue: state.queue.length > 0 ? state.queue : ['0'],
@@ -37,7 +38,7 @@ const process = (
     return {
       queue: [...state.queue, state.next],
       next: buttonName,
-      total: calculate([...state.queue, state.next]),
+      total: calculate([...state.queue, state.next]) || 'Cannot divide by zero',
     };
   }
 
@@ -45,10 +46,10 @@ const process = (
     case 'AC':
       return { queue: [], next: null, total: null };
     case '=':
-      if (state.total === 'Cannot divide by zero‬') {
-        return { queue: [], next: null, total: null };
-      }
-      return { queue: [state.total], next: null, total: null };
+      return state.total
+        ? { queue: [state.total], next: null, total: null }
+        : { ...state };
+
     // case '+/-':
     //   if (state.operation) {
     //     return state.next

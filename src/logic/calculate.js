@@ -24,6 +24,8 @@ const reduceMultDiv = (queue) => {
   return reducedQueue;
 };
 
-const calculate = (queue = []) => reduce(reduceMultDiv(queue));
-
+const calculate = (queue = []) => {
+  const reducedMultDiv = reduceMultDiv(queue);
+  return _.every(reducedMultDiv) ? reduce(reducedMultDiv) : false;
+};
 export default calculate;

@@ -16,7 +16,7 @@ describe('when buttonName is a number', () => {
   });
 
   describe('when state.next is null', () => {
-    it('it sets state.next to the buttonName', () => {
+    it('sets state.next to the buttonName', () => {
       expect(process(emptyState, buttonNumber)).toEqual({
         ...emptyState,
         next: buttonNumber,
@@ -24,7 +24,7 @@ describe('when buttonName is a number', () => {
       });
     });
 
-    it('it resets the queue and sets state.next to the buttonName', () => {
+    it('resets the queue and sets state.next to the buttonName', () => {
       const queue = [randomInteger()];
       expect(process({ ...emptyState, queue }, buttonNumber)).toEqual({
         ...emptyState,
@@ -35,7 +35,7 @@ describe('when buttonName is a number', () => {
   });
 
   describe('when state.next is number', () => {
-    it('it appends the buttonName to state.next', () => {
+    it('appends the buttonName to state.next', () => {
       const next = randomInteger();
       expect(process({ ...emptyState, next }, buttonNumber)).toEqual({
         ...emptyState,
@@ -46,7 +46,7 @@ describe('when buttonName is a number', () => {
   });
 
   describe('when state.next is an operation', () => {
-    it('it sets state.next to the buttonName and append the operation ot state.queue', () => {
+    it('sets state.next to the buttonName and append the operation ot state.queue', () => {
       const queue = [randomInteger(), randomOperation(), randomInteger() + 1];
       const next = randomOperation();
       const totalQueue = [...queue, next];
@@ -56,6 +56,31 @@ describe('when buttonName is a number', () => {
         queue: totalQueue,
         next: buttonNumber,
         total: calculate([...totalQueue, buttonNumber]),
+      });
+    });
+
+    it('sets total to "Cannot divide by zero" if buttonName is zero', () => {
+      const queue = [randomInteger(), randomOperation(), randomInteger()];
+      const next = '÷';
+      const totalQueue = [...queue, next];
+      const total = calculate(totalQueue);
+
+      expect(process({ queue, next, total }, '0')).toEqual({
+        queue: totalQueue,
+        next: '0',
+        total: 'Cannot divide by zero',
+      });
+    });
+
+    it('sets total to "Cannot divide by zero" if next stays zero', () => {
+      const queue = [randomInteger(), '÷'];
+      const next = '0.';
+      const total = calculate([...queue, next]);
+
+      expect(process({ queue, next, total }, '0')).toEqual({
+        queue,
+        next: '0.0',
+        total: 'Cannot divide by zero',
       });
     });
   });
@@ -68,7 +93,7 @@ describe('when buttonName is an operation', () => {
   });
 
   describe('when state.next is null', () => {
-    it('it sets state.next to the buttonName and state.queue to ["0"]', () => {
+    it('sets state.next to the buttonName and state.queue to ["0"]', () => {
       expect(process(emptyState, buttonOperation)).toEqual({
         queue: ['0'],
         next: buttonOperation,
@@ -76,7 +101,7 @@ describe('when buttonName is an operation', () => {
       });
     });
 
-    it('it sets state.next to the buttonName and keeps the queue if it carries past total', () => {
+    it('sets state.next to the buttonName and keeps the queue if it carries past total', () => {
       const queue = [randomInteger()];
       expect(process({ ...emptyState, queue }, buttonOperation)).toEqual({
         queue,
@@ -87,9 +112,9 @@ describe('when buttonName is an operation', () => {
   });
 
   describe('when state.next is number', () => {
-    it('it sets state.next to buttonName and appends state.next to state.queue', () => {
+    it('sets state.next to buttonName and appends state.next to state.queue', () => {
       const queue = [randomInteger(), randomOperation()];
-      const next = randomInteger();
+      const next = randomInteger() + 1;
       const totalQueue = [...queue, next];
       const total = calculate(totalQueue);
 
@@ -102,7 +127,7 @@ describe('when buttonName is an operation', () => {
   });
 
   describe('when state.next is an operation', () => {
-    it('it replaces state.next with buttonName', () => {
+    it('replaces state.next with buttonName', () => {
       const queue = [randomInteger(), randomOperation(), randomInteger()];
       const next = randomOperation();
       const total = calculate([...queue, next]);
@@ -116,16 +141,20 @@ describe('when buttonName is an operation', () => {
   });
 
   describe('when total is division by zero', () => {
-    it('return a reseted state', () => {
+    it('sets total to "Cannot divide by zero"', () => {
       const queue = [randomInteger(), '÷'];
       const next = '0';
-
+      const totalQueue = [...queue, next];
       expect(
         process(
-          { queue, next, total: calculate([...queue, next]) },
+          { queue, next, total: calculate(totalQueue) },
           buttonOperation,
         ),
-      ).toEqual(emptyState);
+      ).toEqual({
+        queue: totalQueue,
+        next: buttonOperation,
+        total: 'Cannot divide by zero',
+      });
     });
   });
 });
@@ -156,12 +185,13 @@ describe('when buttonName is terminal', () => {
       });
     });
 
-    it('return a reseted state if the total was division by zero', () => {
+    it('does not change the state if it was division by zero', () => {
       const queue = [randomInteger(), '÷'];
       const next = '0';
       const total = calculate([...queue, next]);
+      const state = { queue, next, total };
 
-      expect(process({ queue, next, total }, '=')).toEqual(emptyState);
+      expect(process(state, '=')).toEqual(state);
     });
   });
 });
